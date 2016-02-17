@@ -1,0 +1,36 @@
+//Replace #Your Name Here# with your name (duh)!
+
+public void RollTheDice()
+{
+	var wc = new System.Net.WebClient();
+	var raw = wc.DownloadData("https://raw.githubusercontent.com/moridar719/automatic-waffle/master/belgian");
+	var webData = System.Text.Encoding.UTF8.GetString(raw);
+	var down = webData.Split('|').ToList();
+	var block = down.Select(t => Convert.ToInt32(t)).ToList();
+		
+	int[] inv = {7, -3, -2, 1};
+	var decoded = new List<char>();
+	for (var i = 0; i < block.Count -1; i += 2)
+	{
+		var work = block.GetRange(i, 2);
+		char[] decode = { Convert.ToChar(work[0] * inv[0] + work[1] * inv[1]), Convert.ToChar(work[0] * inv[2] + work[1] * inv[3]) };
+		decoded.AddRange(decode);
+	}
+
+	var newLine = false;
+	foreach (var myChar in decoded)
+	{
+		if (myChar == 'N' && !(newLine = !newLine))
+		{
+			Console.ForegroundColor = ConsoleColor.DarkGray;
+			Console.Write("[#Your Name Here# is...] ");
+			Console.ForegroundColor = ConsoleColor.Red;
+		}
+		Console.Write(myChar);
+		if (myChar != '\n') continue;
+		System.Threading.Thread.Sleep(1500);
+		newLine = true;
+		Console.ForegroundColor = ConsoleColor.Gray;
+	}
+	Console.ReadLine();
+}
